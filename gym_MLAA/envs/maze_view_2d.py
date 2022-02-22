@@ -6,7 +6,7 @@ import os
 
 class MazeView2D:
 
-    def __init__(self, maze_name="Maze2D", maze_file_path=None,
+    def __init__(self, maze_name="Maze2D",
                  maze_size=(30, 30), screen_size=(600, 600),
                  has_loops=False, num_portals=0, enable_render=True):
 
@@ -18,17 +18,7 @@ class MazeView2D:
         self.__enable_render = enable_render
 
         # Load a maze
-        if maze_file_path is None:
-            self.__maze = Maze(maze_size=maze_size, has_loops=has_loops, num_portals=num_portals)
-        else:
-            if not os.path.exists(maze_file_path):
-                dir_path = os.path.dirname(os.path.abspath(__file__))
-                rel_path = os.path.join(dir_path, "maze_samples", maze_file_path)
-                if os.path.exists(rel_path):
-                    maze_file_path = rel_path
-                else:
-                    raise FileExistsError("Cannot find %s." % maze_file_path)
-            self.__maze = Maze(maze_cells=Maze.load_maze(maze_file_path))
+        self.__maze = Maze(maze_size=maze_size, has_loops=has_loops, num_portals=num_portals)
 
         self.maze_size = self.__maze.maze_size
         if self.__enable_render is True:

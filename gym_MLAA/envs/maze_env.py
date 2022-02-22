@@ -13,17 +13,12 @@ class MazeEnv(gym.Env):
 
     ACTION = ["N", "S", "E", "W"]
 
-    def __init__(self, maze_file=None, maze_size=None, mode=None, enable_render=True):
+    def __init__(self, maze_size=None, mode=None, enable_render=True):
 
         self.viewer = None
         self.enable_render = enable_render
 
-        if maze_file:
-            self.maze_view = MazeView2D(maze_name="OpenAI Gym - Maze (%s)" % maze_file,
-                                        maze_file_path=maze_file,
-                                        screen_size=(640, 640), 
-                                        enable_render=enable_render)
-        elif maze_size:
+        if maze_size:
             if mode == "plus":
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
@@ -36,7 +31,7 @@ class MazeEnv(gym.Env):
                                         has_loops=has_loops, num_portals=num_portals,
                                         enable_render=enable_render)
         else:
-            raise AttributeError("One must supply either a maze_file path (str) or the maze_size (tuple of length 2)")
+            raise AttributeError("One must supply the maze_size (tuple of length 2)")
 
         self.maze_size = self.maze_view.maze_size
 
@@ -109,22 +104,11 @@ class MazeEnv(gym.Env):
         return self.maze_view.update(mode)
 
 
-class MazeEnvSample5x5(MazeEnv):
-
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample5x5, self).__init__(maze_file="maze2d_5x5.npy", enable_render=enable_render)
-
 
 class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
         super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render)
-
-
-class MazeEnvSample10x10(MazeEnv):
-
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample10x10, self).__init__(maze_file="maze2d_10x10.npy", enable_render=enable_render)
 
 
 class MazeEnvRandom10x10(MazeEnv):
@@ -133,23 +117,10 @@ class MazeEnvRandom10x10(MazeEnv):
         super(MazeEnvRandom10x10, self).__init__(maze_size=(10, 10), enable_render=enable_render)
 
 
-class MazeEnvSample3x3(MazeEnv):
-
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample3x3, self).__init__(maze_file="maze2d_3x3.npy", enable_render=enable_render)
-
-
 class MazeEnvRandom3x3(MazeEnv):
 
     def __init__(self, enable_render=True):
         super(MazeEnvRandom3x3, self).__init__(maze_size=(3, 3), enable_render=enable_render)
-
-
-class MazeEnvSample100x100(MazeEnv):
-
-    def __init__(self, enable_render=True):
-        super(MazeEnvSample100x100, self).__init__(maze_file="maze2d_100x100.npy", enable_render=enable_render)
-
 
 class MazeEnvRandom100x100(MazeEnv):
 
