@@ -22,13 +22,15 @@ class MazeEnv(gym.Env):
             if mode == "plus":
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
+                num_fires = 9
             else:
                 has_loops = False
                 num_portals = 0
+                num_fires = 0 
 
             self.maze_view = MazeView2D(maze_name="OpenAI Gym - Maze (%d x %d)" % maze_size,
                                         maze_size=maze_size, screen_size=(640, 640),
-                                        has_loops=has_loops, num_portals=num_portals,
+                                        has_loops=has_loops, num_portals=num_portals,num_fires=num_fires,
                                         enable_render=enable_render)
         else:
             raise AttributeError("One must supply the maze_size (tuple of length 2)")
@@ -74,8 +76,8 @@ class MazeEnv(gym.Env):
         if np.array_equal(self.maze_view.robot, self.maze_view.goal):
             reward = 1
             done = True
-        elif np.array_equal(self.maze_view.robot, self.maze_view.fire):
-            reward = -10
+        elif self.maze_view.fire:
+            reward = -1/(self.maze_size[0]*self.maze_size[1])
             done = False
         else:
             reward = -0.1/(self.maze_size[0]*self.maze_size[1])
@@ -108,7 +110,7 @@ class MazeEnv(gym.Env):
 class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render)
+        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5),mode="plus", enable_render=enable_render)
 
 
 class MazeEnvRandom10x10(MazeEnv):
@@ -143,3 +145,4 @@ class MazeEnvRandom20x20Plus(MazeEnv):
 class MazeEnvRandom30x30Plus(MazeEnv):
     def __init__(self, enable_render=True):
         super(MazeEnvRandom30x30Plus, self).__init__(maze_size=(30, 30), mode="plus", enable_render=enable_render)
+

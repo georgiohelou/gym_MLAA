@@ -8,7 +8,7 @@ class MazeView2D:
 
     def __init__(self, maze_name="Maze2D",
                  maze_size=(30, 30), screen_size=(600, 600),
-                 has_loops=False, num_portals=0, enable_render=True):
+                 has_loops=False, num_portals=0,num_fires=0, enable_render=True):
 
         # PyGame configurations
         pygame.init()
@@ -18,7 +18,7 @@ class MazeView2D:
         self.__enable_render = enable_render
 
         # Load a maze
-        self.__maze = Maze(maze_size=maze_size, has_loops=has_loops, num_portals=num_portals)
+        self.__maze = Maze(maze_size=maze_size, has_loops=has_loops, num_portals=num_portals, num_fires=num_fires)
 
         self.maze_size = self.__maze.maze_size
         if self.__enable_render is True:
@@ -33,7 +33,7 @@ class MazeView2D:
         self.__goal = np.array(self.maze_size) - np.array((2, 2))
 
         # Set the Fire
-        self.__fire = np.array(self.maze_size) - np.array((4, 4))
+        #self.__fire = np.array(self.maze_size) - np.array((4, 4))
 
         # Create the Robot
         self.__robot = self.entrance
@@ -212,7 +212,13 @@ class MazeView2D:
     
     def __draw_fire(self, colour=(255, 0, 0), transparency=235):
 
-        self.__colour_cell(self.fire, colour=colour, transparency=transparency)
+        #self.__colour_cell(self.fire, colour=colour, transparency=transparency)
+        if self.__enable_render is False:
+            return
+        
+        for fire in self.maze.fires:
+            for location in fire.locations:
+                self.__colour_cell(location, colour=colour, transparency=transparency)
 
     def __draw_portals(self, transparency=160):
 
@@ -259,7 +265,7 @@ class MazeView2D:
     
     @property
     def fire(self):
-        return self.__fire
+        return self.maze.is_fire(self.robot)
 
     @property
     def game_over(self):
@@ -295,7 +301,7 @@ class Maze:
         "W": (-1, 0)
     }
 
-    def __init__(self, maze_cells=None, maze_size=(10,10), has_loops=True, num_portals=0):
+    def __init__(self, maze_cells=None, maze_size=(10,10), has_loops=True, num_portals=0, num_fires=0):
 
         # maze member variables
         self.maze_cells = maze_cells
@@ -303,6 +309,10 @@ class Maze:
         self.__portals_dict = dict()
         self.__portals = []
         self.num_portals = num_portals
+
+        self.__fires_dict = dict()
+        self.__fires = []
+        self.num_fires = num_fires
 
         # Use existing one if exists
         if self.maze_cells is not None:
@@ -395,6 +405,9 @@ class Maze:
         if self.num_portals > 0:
             self.__set_random_portals(num_portal_sets=self.num_portals, set_size=2)
 
+        if self.num_fires > 0:
+            self.__set_random_fires(num_fire_sets=self.num_fires, set_size=2)    
+
     def __break_random_walls(self, percent):
         # find some random cells to break
         num_cells = int(round(self.MAZE_H*self.MAZE_W*percent))
@@ -444,6 +457,38 @@ class Maze:
             for portal_location in portal_locations:
                 self.__portals_dict[portal_location] = portal
 
+
+    def __set_random_fires(self, num_fire_sets, set_size=2):
+        # find some random cells to break
+        num_fire_sets = int(num_fire_sets)
+        set_size = int(set_size)
+
+        # limit the maximum number of portal sets to the number of cells available.
+        max_fire_sets = int(self.MAZE_W * self.MAZE_H / set_size)
+        num_fire_sets = min(max_fire_sets, num_fire_sets)
+
+        # the first and last cells are reserved
+        cell_ids = random.sample(range(1, self.MAZE_W * self.MAZE_H - 1), num_fire_sets*set_size)
+
+        for i in range(num_fire_sets):
+            # sample the set_size number of sell
+            fire_cell_ids = random.sample(cell_ids, set_size)
+            fire_locations = []
+            for fire_cell_id in fire_cell_ids:
+                # remove the cell from the set of potential cell_ids
+                cell_ids.pop(cell_ids.index(fire_cell_id))
+                # convert portal ids to location
+                x = fire_cell_id % self.MAZE_H
+                y = int(fire_cell_id / self.MAZE_H)
+                fire_locations.append((x,y))
+            # append the new portal to the maze
+            fire = Fire(*fire_locations)
+            self.__fires.append(fire)
+
+            # create a dictionary of portals
+            for fire_location in fire_locations:
+                self.__fires_dict[fire_location] = fire
+
     def is_open(self, cell_id, dir):
         # check if it would be out-of-bound
         x1 = cell_id[0] + self.COMPASS[dir][0]
@@ -470,6 +515,9 @@ class Maze:
 
     def is_portal(self, cell):
         return tuple(cell) in self.__portals_dict
+    
+    def is_fire(self, cell):
+        return tuple(cell) in self.__fires_dict
 
     @property
     def portals(self):
@@ -478,6 +526,15 @@ class Maze:
     def get_portal(self, cell):
         if cell in self.__portals_dict:
             return self.__portals_dict[cell]
+        return None
+        
+    @property
+    def fires(self):
+        return tuple(self.__fires)
+
+    def get_fire(self, cell):
+        if cell in self.__fires_dict:
+            return self.__fires_dict[cell]
         return None
 
     @property
@@ -568,6 +625,26 @@ class Portal:
     @property
     def locations(self):
         return self.__locations
+
+class Fire:
+
+    def __init__(self, *locations):
+
+        self.__locations = []
+        for location in locations:
+            if isinstance(location, (tuple, list)):
+                self.__locations.append(tuple(location))
+            else:
+                raise ValueError("location must be a list or a tuple.")
+
+    def get_index(self, cell):
+        return self.locations.index(cell)
+
+    @property
+    def locations(self):
+        return self.__locations
+
+
 
 
 if __name__ == "__main__":
