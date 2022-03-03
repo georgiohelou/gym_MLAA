@@ -22,7 +22,7 @@ class MazeEnv(gym.Env):
             if mode == "plus":
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
-                num_fires = 9
+                num_fires = 4
             else:
                 has_loops = False
                 num_portals = 0
