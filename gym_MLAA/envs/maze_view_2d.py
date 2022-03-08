@@ -30,7 +30,7 @@ class MazeView2D:
         self.__entrance = np.zeros(2, dtype=int)
 
         # Set the Goal
-        self.__goal = np.array(self.maze_size) - np.array((2, 2))
+        self.__goal = np.array(self.maze_size) - np.array((1, 1))
 
         # Set the Fire
         #self.__fire = np.array(self.maze_size) - np.array((4, 4))

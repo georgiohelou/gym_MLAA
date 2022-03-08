@@ -13,7 +13,7 @@ class MazeEnv(gym.Env):
 
     ACTION = ["N", "S", "E", "W"]
 
-    def __init__(self, maze_size=None, mode=None, enable_render=True):
+    def __init__(self, maze_size=None, mode=None, enable_render=True, fire_ratio=0):
 
         self.viewer = None
         self.enable_render = enable_render
@@ -22,7 +22,8 @@ class MazeEnv(gym.Env):
             if mode == "plus":
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
-                num_fires = 4
+                num_fires = 0.5*fire_ratio*(min(maze_size)**2)
+                #num_fires = 20
             else:
                 has_loops = False
                 num_portals = 0
@@ -106,11 +107,15 @@ class MazeEnv(gym.Env):
         return self.maze_view.update(mode)
 
 
+class MazeEnvRandom3x3(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom3x3, self).__init__(maze_size=(3, 3), enable_render=enable_render)
 
 class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5),mode="plus", enable_render=enable_render)
+        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5), enable_render=enable_render)
 
 
 class MazeEnvRandom10x10(MazeEnv):
@@ -118,17 +123,21 @@ class MazeEnvRandom10x10(MazeEnv):
     def __init__(self, enable_render=True):
         super(MazeEnvRandom10x10, self).__init__(maze_size=(10, 10), enable_render=enable_render)
 
-
-class MazeEnvRandom3x3(MazeEnv):
+class MazeEnvRandom30x30(MazeEnv):
 
     def __init__(self, enable_render=True):
-        super(MazeEnvRandom3x3, self).__init__(maze_size=(3, 3), enable_render=enable_render)
+        super(MazeEnvRandom30x30, self).__init__(maze_size=(30, 30), enable_render=enable_render)
+
 
 class MazeEnvRandom100x100(MazeEnv):
 
     def __init__(self, enable_render=True):
-        super(MazeEnvRandom100x100, self).__init__(maze_size=(100, 100),mode="plus", enable_render=enable_render)
+        super(MazeEnvRandom100x100, self).__init__(maze_size=(100, 100), enable_render=enable_render)
 
+class MazeEnvRandom5x5Plus(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Plus, self).__init__(maze_size=(5, 5), mode="plus", enable_render=enable_render)
 
 class MazeEnvRandom10x10Plus(MazeEnv):
 
@@ -146,3 +155,32 @@ class MazeEnvRandom30x30Plus(MazeEnv):
     def __init__(self, enable_render=True):
         super(MazeEnvRandom30x30Plus, self).__init__(maze_size=(30, 30), mode="plus", enable_render=enable_render)
 
+#
+class MazeEnvRandom5x5Ratio30(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Ratio30, self).__init__(maze_size=(5, 5), enable_render=enable_render, fire_ratio=0.32)
+
+class MazeEnvRandom10x10Ratio30(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom10x10Ratio30, self).__init__(maze_size=(10, 10), enable_render=enable_render, fire_ratio=0.32)
+
+class MazeEnvRandom30x30Ratio30(MazeEnv):
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom30x30Ratio30, self).__init__(maze_size=(30, 30), enable_render=enable_render, fire_ratio=0.32)
+#
+class MazeEnvRandom5x5PlusRatio30(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5PlusRatio30, self).__init__(maze_size=(5, 5),mode="plus", enable_render=enable_render, fire_ratio=0.32)
+
+class MazeEnvRandom10x10PlusRatio30(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom10x10PlusRatio30, self).__init__(maze_size=(10, 10), mode="plus", enable_render=enable_render, fire_ratio=0.32)
+
+class MazeEnvRandom30x30PlusRatio30(MazeEnv):
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom30x30PlusRatio30, self).__init__(maze_size=(30, 30), mode="plus", enable_render=enable_render, fire_ratio=0.32)
+        
