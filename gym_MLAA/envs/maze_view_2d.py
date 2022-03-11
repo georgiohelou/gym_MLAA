@@ -65,6 +65,11 @@ class MazeView2D:
             # show the fire
             self.__draw_fire()
 
+    def change_goal(self,new_goal):
+        self.__colour_cell(self.goal, colour=(255, 255, 255),transparency=255) #remove old goal
+        self.__goal = new_goal
+        self.__draw_goal()
+
     def update(self, mode="human"):
         try:
             img_output = self.__view_update(mode)

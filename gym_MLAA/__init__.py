@@ -1,11 +1,26 @@
 from gym.envs.registration import register
 
 register(
+    id='maze-random-5x5-plus-v0',
+    entry_point='gym_MLAA.envs:MazeEnvRandom5x5Plus',
+    max_episode_steps=2000,
+    nondeterministic=True,
+)
+
+register(
+    id='maze-random-5x5-portals-v0',
+    entry_point='gym_MLAA.envs:MazeEnvRandom5x5Portals',
+    max_episode_steps=2000,
+    nondeterministic=True,
+)
+
+register(
     id='maze-random-5x5-v0',
     entry_point='gym_MLAA.envs:MazeEnvRandom5x5',
     max_episode_steps=2000,
     nondeterministic=True,
 )
+
 
 register(
     id='maze-random-10x10-v0',

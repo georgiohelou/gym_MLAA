@@ -23,6 +23,10 @@ class MazeEnv(gym.Env):
                 has_loops = True
                 num_portals = int(round(min(maze_size)/3))
                 num_fires = 4
+            elif mode == "portals":
+                num_portals = int(round(min(maze_size)/3))
+                has_loops = False
+                num_fires = 0 
             else:
                 has_loops = False
                 num_portals = 0
@@ -105,12 +109,20 @@ class MazeEnv(gym.Env):
 
         return self.maze_view.update(mode)
 
-
-
 class MazeEnvRandom5x5(MazeEnv):
 
     def __init__(self, enable_render=True):
-        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5),mode="plus", enable_render=enable_render)
+        super(MazeEnvRandom5x5, self).__init__(maze_size=(5, 5),enable_render=enable_render)
+
+class MazeEnvRandom5x5Portals(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Portals, self).__init__(maze_size=(5, 5),enable_render=enable_render,mode="portals")
+
+class MazeEnvRandom5x5Plus(MazeEnv):
+
+    def __init__(self, enable_render=True):
+        super(MazeEnvRandom5x5Plus, self).__init__(maze_size=(5, 5),mode="plus", enable_render=enable_render)
 
 
 class MazeEnvRandom10x10(MazeEnv):
