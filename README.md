@@ -17,3 +17,5 @@ maze-random-30x30-Ratio-30-v0
 maze-random-5x5-plus-Ratio-30-v0
 maze-random-10x10-plus-Ratio-30-v0
 maze-random-30x30-plus-Ratio-30-v0
+
+P.S: Plus relates to the use of portals and Ratio relates to ratio of penalty tiles
